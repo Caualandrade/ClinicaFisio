@@ -67,7 +67,7 @@ public class PacienteDaoJDBC implements PacienteDao {
 
 		PreparedStatement st = null;
 
-		String sql = "DELETE FROM TB_PACIENTE WHERE = ?";
+		String sql = "DELETE FROM TB_PACIENTE WHERE TB_PACIENTE.ID = ?";
 		try {
 			st = conn.prepareStatement(sql);
 			st.setInt(1, id);

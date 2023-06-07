@@ -14,8 +14,6 @@ import dao.ConsultaDao;
 import db.DB;
 import db.DbException;
 import entidades.Consulta;
-import entidades.Endereco;
-import entidades.Especialidade;
 import entidades.Fisioterapeuta;
 import entidades.Paciente;
 import entidades.Unidade;
@@ -133,6 +131,40 @@ public class ConsultaDaoJDBC implements ConsultaDao {
 
 		try {
 			st = conn.prepareStatement(sql);
+			rs = st.executeQuery();
+			List<Consulta> lista = new ArrayList();
+			while (rs.next()) {
+				Paciente paciente = instanciaPaciente(rs);
+				Unidade unidade = instanciaUnidade(rs);
+				Fisioterapeuta fisio = instaciaFisio(rs);
+				Consulta consulta = instanciaConsulta(rs, paciente, unidade, fisio);
+				lista.add(consulta);
+			}
+			return lista;
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+	}
+
+	@Override
+	public List<Consulta> findByDate(String inicio, String fim) {
+
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT TB_CONSULTA.ID, TB_CONSULTA.DATA_HORA AS CONSULTA_DATA_HORA, tb_paciente.Nome as Nome_Paciente,\r\n"
+				+ "				tb_fisio.nome as Nome_Fisio, tb_unidade.NOME as Nome_Unidade\r\n"
+				+ "				from tb_consulta join tb_paciente on tb_consulta.ID_PAC = tb_paciente.ID\r\n"
+				+ "				join tb_fisio on tb_consulta.ID_FISIO = tb_fisio.Id\r\n"
+				+ "				join tb_unidade on tb_consulta.ID_UNI = tb_unidade.ID where tb_consulta.data_hora between ? and ?";
+
+		try {
+			st = conn.prepareStatement(sql);
+			st.setString(1, inicio);
+			st.setString(2, fim);
 			rs = st.executeQuery();
 			List<Consulta> lista = new ArrayList();
 			while (rs.next()) {
