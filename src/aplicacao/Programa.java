@@ -2,6 +2,7 @@ package aplicacao;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -123,11 +124,29 @@ public class Programa {
 				consultaDao.insert(consulta);
 				break;
 			case 2:
-				System.out.println("Consultas: ");
-				List<Consulta> consultas = consultaDao.findAll();
-				for (Consulta c : consultas) {
-					System.out.println(c.consultaPerso());
+				System.out.println("1 - Visualizar todas as consultas\n2 - Visualizar consultas em determinado tempo");
+				resp = sc.nextInt();
+				if(resp==1) {
+					System.out.println("Consultas: ");
+					List<Consulta> consultas = consultaDao.findAll();
+					for (Consulta c : consultas) {
+						System.out.println(c.consultaPerso());
+					}	
+				}else if (resp==2) {
+					sc.nextLine();
+					System.out.print("Informe a data inicial: ");
+					String inicio = sc.nextLine();
+					Date dataInicio = sdfBrasilDate.parse(inicio);
+					System.out.print("Informe a data final: ");
+					String fim = sc.nextLine();
+					Date dataFinal = sdfBrasilDate.parse(fim);
+					List<Consulta> lista = new ArrayList<>();
+					lista = consultaDao.findByDate(sdfBancoDate.format(dataInicio), sdfBancoDate.format(dataFinal));
+					for (Consulta c : lista) {
+						System.out.println(c.consultaPerso());
+					}
 				}
+				
 
 				break;
 			case 3:
@@ -240,7 +259,7 @@ public class Programa {
 						enderecoDao.insert(endCad);
 						unidadeCad.setEndereco(endCad);
 						unidadeDao.insert(unidadeCad);
-						System.out.println("Unidade cadastrada!");
+						System.out.println("## Unidade cadastrada! ##");
 					} else if (resp == 2) {
 						List<Unidade> lista = unidadeDao.findAll();
 						for (Unidade u : lista) {
@@ -249,7 +268,7 @@ public class Programa {
 						System.out.println("Deseja excluir qual unidade?");
 						int esc = sc.nextInt();
 						unidadeDao.deleteById(esc);
-						System.out.println("Unidade excluida com sucesso");
+						System.out.println("## Unidade excluida ##");
 					} else if (resp == 3) {
 						List<Unidade> lista = unidadeDao.findAll();
 						for (Unidade u : lista) {
@@ -270,7 +289,7 @@ public class Programa {
 						System.out.println("Informe o nome da especialidade");
 						espCad.setNome(sc.nextLine());
 						especialidadeDao.insert(espCad);
-						System.out.println("Especialidade cadastrada com sucesso");
+						System.out.println("## Especialidade cadastrada com sucesso ##");
 					} else if (resp == 2) {
 						List<Especialidade> lista = especialidadeDao.findAll();
 						for (Especialidade e : lista) {
@@ -278,7 +297,7 @@ public class Programa {
 						}
 						System.out.println("Informe qual especialidade deseja excluir");
 						especialidadeDao.deleteById(sc.nextInt());
-						System.out.println("Especialidade excluida");
+						System.out.println("## Especialidade excluida ##");
 					} else if (resp == 3) {
 						List<Especialidade> lista = especialidadeDao.findAll();
 						for (Especialidade e : lista) {
@@ -296,7 +315,7 @@ public class Programa {
 						System.out.println("Digite o novo nome");
 						espEsc.setNome(sc.nextLine());
 						especialidadeDao.update(espEsc);
-						System.out.println("Especialidade alterada");
+						System.out.println("## Especialidade alterada ##");
 					}
 					break;
 				case 4:
@@ -314,16 +333,17 @@ public class Programa {
 						}
 						System.out.println("Informe qual paciente deseja excluir");
 						pacienteDao.deleteById(sc.nextInt());
-						System.out.println("Paciente excluido");
+						System.out.println("## Paciente excluido ##");
 					}
 					break;
 				case 5:
 					List<Consulta> lista = consultaDao.findAll();
-					for(Consulta l: lista) {
+					for (Consulta l : lista) {
 						System.out.println(l.consultaPerso());
 					}
 					System.out.println("Deseja excluir qual consulta");
 					consultaDao.deleteById(sc.nextInt());
+					System.out.println("## Consulta excluida ##");
 					break;
 				default:
 					System.out.println("Opção inválida");

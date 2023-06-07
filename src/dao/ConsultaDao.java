@@ -1,5 +1,6 @@
 package dao;
 
+import java.util.Date;
 import java.util.List;
 
 import entidades.Consulta;
@@ -16,5 +17,7 @@ public interface ConsultaDao {
 	Consulta findById(Integer id);
 
 	List<Consulta> findAll();
+	
+	List<Consulta> findByDate(String inicio, String fim);
 	
 }
